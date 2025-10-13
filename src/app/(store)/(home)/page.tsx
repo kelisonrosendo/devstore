@@ -25,7 +25,7 @@ export default async function Home() {
         <Image
           src={highlightedProduct.image}
           alt={highlightedProduct.title}
-          className="group-hover:scale-105 traansition-transform duration-500"
+          className="group-hover:scale-105 duration-500"
           width={920}
           height={920}
         />
@@ -51,7 +51,7 @@ export default async function Home() {
             <Image
               src={product.image}
               alt=""
-              className="group-hover:scale-105 traansition-transform duration-500"
+              className="group-hover:scale-105 duration-500"
               width={920}
               height={920}
             />

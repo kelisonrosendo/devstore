@@ -1,20 +1,10 @@
-import { api } from "@/data/api";
-import { Product } from "@/data/types";
 import Image from "next/image";
 import Link from "next/link";
-
-async function getFeaturedProducts(): Promise<Product[]> {
-  const response = await api("/products/featured", {
-    next: { revalidate: 60 * 60 },
-  });
-
-  const products = await response.json();
-
-  return products;
-}
+import { ProductService } from "@/services/product";
 
 export default async function Home() {
-  const [highlightedProduct, ...otherProducts] = await getFeaturedProducts();
+  const [highlightedProduct, ...otherProducts] =
+    await ProductService.getFeaturedProducts();
 
   return (
     <div className="grid max-h-[868px] grid-cols-9 grid-rows-6 gap-6">
@@ -23,7 +13,8 @@ export default async function Home() {
         className="group relative col-span-6 row-span-6 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-end"
       >
         <Image
-          src={highlightedProduct.image}
+          unoptimized
+          src={highlightedProduct.images[0]}
           alt={highlightedProduct.title}
           className="group-hover:scale-105 duration-500"
           width={920}
@@ -49,7 +40,7 @@ export default async function Home() {
             className="group relative col-span-3 row-span-3 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-end"
           >
             <Image
-              src={product.image}
+              src={product.images[0]}
               alt=""
               className="group-hover:scale-105 duration-500"
               width={920}

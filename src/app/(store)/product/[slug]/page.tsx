@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { api } from "@/data/api";
-import { Product } from "@/data/types";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { ProductService } from "@/services/product";
 
 interface ProductProps {
   params: {
@@ -9,27 +8,16 @@ interface ProductProps {
   };
 }
 
-async function getProduct(slug: string): Promise<Product> {
-  const response = await api(`/products/${slug}`, {
-    next: {
-      revalidate: 60 * 60,
-    },
-  });
-
-  const product = await response.json();
-
-  return product;
-}
-
 export default async function ProductPage({ params }: ProductProps) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const product = await ProductService.getProductBySlug(slug);
 
   return (
     <div className="relative grid max-h-[868px] grid-cols-3">
       <div className="col-span-2 overflow-hidden">
         <Image
-          src={product.image}
+          unoptimized
+          src={product.images[0]}
           alt={product.title}
           width={1000}
           height={1000}
@@ -58,19 +46,6 @@ export default async function ProductPage({ params }: ProductProps) {
               currency: "BRL",
             })}
           </span>
-        </div>
-
-        <div className="mt-8 space-y-4">
-          <span className="block font-semibold">Tamanhos</span>
-
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className="flex h-9 w-14 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-sm"
-            >
-              P
-            </button>
-          </div>
         </div>
 
         <AddToCartButton productId={product.id} />

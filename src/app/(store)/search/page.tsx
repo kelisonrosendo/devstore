@@ -1,23 +1,12 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Product } from "@/data/types";
-import { api } from "@/data/api";
+import { ProductService } from "@/services/product";
 
 interface SearchProps {
   searchParams: {
     q: string;
   };
-}
-
-async function searchhProducts(query: string): Promise<Product[]> {
-  const response = await api(`/products/search?q=${query}`, {
-    next: { revalidate: 60 * 60 },
-  });
-
-  const products = await response.json();
-
-  return products;
 }
 
 export default async function Search({ searchParams }: SearchProps) {
@@ -27,7 +16,7 @@ export default async function Search({ searchParams }: SearchProps) {
     redirect("/");
   }
 
-  const products = await searchhProducts(query);
+  const products = await ProductService.searchProducts(query);
 
   return (
     <div className="flex flex-col gap-4">
@@ -43,7 +32,8 @@ export default async function Search({ searchParams }: SearchProps) {
             className="group relative rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-end"
           >
             <Image
-              src={product.image}
+              unoptimized
+              src={product.images[0]}
               alt={product.title}
               className="group-hover:scale-105 duration-500"
               width={400}
